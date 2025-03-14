@@ -1,24 +1,45 @@
 class Solution {
 public:
-    int minZeroArray(vector<int>& nums, vector<vector<int>>& queries) {
+    bool func (vector <int> &nums, vector<vector<int>> &queries, int k) {
         int n = nums.size(), m = queries.size();
 
-        int sum = 0, k = 0;
-        vector <int> pre(n + 1, 0);
-        for (int i = 0; i < n; i++) {
-            while (sum + pre[i] < nums[i]) {
-                k++;
+        vector <int> pre (n + 1, 0);
 
-                if (k > m) return -1;
-
-                if (queries[k - 1][1] >= i) {
-                    pre[max(i, queries[k - 1][0])] += queries[k - 1][2];
-                    pre[queries[k - 1][1] + 1] -= queries[k - 1][2];
-                }
-            }
-            sum += pre[i];
+        for (int i = 0; i < k; i++) {
+            pre[queries[i][0]] += queries[i][2];
+            pre[queries[i][1] + 1] -= queries[i][2];
         }
 
-        return k;
+        int s = 0;
+        for (int i = 0; i < n; i++) {
+            s += pre[i];
+
+            if (s < nums[i]) return false;
+        }
+
+        return true;
+    }
+
+    int minZeroArray(vector<int>& nums, vector<vector<int>>& queries) {
+        int m = queries.size();
+
+        if (!func(nums, queries, m)) {
+            return -1;
+        }
+
+        int l = 0, r = m;
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+
+            if (func(nums, queries, mid)) {
+                r = mid - 1;
+            }
+            else {
+                l = mid + 1;
+            }
+        }
+
+        return l;
+
     }
 };
