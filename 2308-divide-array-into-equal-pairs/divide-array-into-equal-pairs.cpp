@@ -1,17 +1,23 @@
 class Solution {
 public:
     bool divideArray(vector<int>& nums) {
-        unordered_map <int, int> mp;
+        sort (nums.begin(), nums.end());
 
-        for (int i = 0; i < nums.size(); i++) {
-            mp[nums[i]]++;
-        }
-
+        int c = 1;
         bool flag = true;
-        for (int i = 1; i <= 500; i++) {
-            if (mp[i] % 2) {
-                flag = false;
+        for (int i = 1; i < nums.size(); i++) {
+            if (nums[i] == nums[i - 1]) {
+                c++;
             }
+            else {
+                if (c % 2) {
+                    flag = false;
+                }
+                c = 1;
+            }
+        }
+        if (c % 2) {
+            flag = false;
         }
 
         return flag;
